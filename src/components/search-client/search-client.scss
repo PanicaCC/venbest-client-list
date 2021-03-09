@@ -1,0 +1,30 @@
+.search {
+
+  &__form {
+
+    &--main {
+      display: flex;
+    }
+
+    &--input {
+      font-size: 12px;
+      height: 22px;
+    }
+
+    &--gender {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-top: 35px;
+
+      p:first-child {
+        margin-right: 15px;
+        font-size: 18px;
+      }
+
+      label:first-child {
+        margin-right: 30px;
+      };
+    }
+  }
+}
