@@ -3,17 +3,30 @@ import "./search-client.scss"
 import { useForm } from "react-hook-form";
 
 const SearchClient = props => {
-    const { searchHandler } = props
-    const { register, handleSubmit, setValue, errors } = useForm();
+    const { clearGender, searchHandler } = props
+    const { register, handleSubmit, setValue, errors, getValues } = useForm();
 
     const onChange= (e) => {
         let inputKey = e.target.name
-        if (inputKey === "genderF" || inputKey === "genderM"){
-            inputKey = "sex"
-        }
-        console.log('key', inputKey)
         setValue(inputKey, e.target.value);
         handleSubmit((data) => searchHandler(data, inputKey))();
+    }
+
+    const onChecked = (e) => {
+        const name = getValues('name')
+        const lastname = getValues('lastname')
+        const age = getValues('age')
+        const data = {name: name, lastname: lastname, age: age}
+        if (e.target.name === "genderM") {
+            data["genderM"] = e.target.checked
+        }
+        if (e.target.name === "genderF") {
+            data["genderF"] = e.target.checked
+        }
+        if(!e.target.checked){
+            clearGender(data, e.target.name)
+        }
+        searchHandler(data, e.target.name);
     }
 
     return (
@@ -40,13 +53,13 @@ const SearchClient = props => {
                         <p>Пол</p>
                         <p>
                             <label>
-                                <input onChange={ event => onChange(event) } name={"genderM"} type="checkbox" ref={register} className="filled-in male"/>
+                                <input onChange={ event => onChecked(event) } name={"genderM"} type="checkbox" className="filled-in male"/>
                                 <span>Мужской</span>
                             </label>
                         </p>
                         <p>
                             <label>
-                                <input onChange={ event => onChange(event) } name={"genderF"} type="checkbox" ref={register} className="filled-in female"/>
+                                <input onChange={ event => onChecked(event) } name={"genderF"} type="checkbox" className="filled-in female"/>
                                 <span>Жеский</span>
                             </label>
                         </p>

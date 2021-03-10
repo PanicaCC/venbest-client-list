@@ -22,6 +22,11 @@ export default class App extends Component {
 
     componentDidMount() {
         this.updateData();
+        this.clearGender()
+    }
+
+    clearGender = () => {
+     this.updateData()
     }
 
     searchHandler = (data, targetName) => {
@@ -29,24 +34,45 @@ export default class App extends Component {
         const newState = [ ...this.state.clients ]
 
         if (isEmpty){
-            return this.setState({
-                clients: this.state.clients
-            })
+            this.clearGender()
         } else {
-           //todo need finished !!!
-        }
+            if(targetName === "name" || targetName === "lastname"){
+                const res = newState.filter(val => {
+                    return val[targetName].toLowerCase().indexOf(data[targetName].toLowerCase()) > -1
+                })
+                return this.setState({
+                    clients: res
+                })
+            }
+            if (targetName === "genderM" || targetName === "genderF"){
+                const updateState = [ ...newState ]
+                const res = updateState.filter(val => {
+                    if (targetName === "genderM" && data[targetName] === true && (!data['genderF'] || data["genderF"] === false)){
+                        return val["sex"].indexOf('m') > -1
+                    }
+                    if (targetName === "genderF" && data[targetName] === true && (!data['genderM'] || data["genderM"] === false)){
+                        return val["sex"].indexOf('f') > -1
+                    }
+                    return res
+                })
+                return this.setState({
+                    clients: res,
+                })
+            }
 
+            if (targetName === "age"){
+                const res = newState.filter(val => {
+                    const str = val[targetName].toString()
+                    return str.indexOf(data['age']) > -1
+                })
+                return this.setState({
+                    clients: res
+                })
+            }
+        }
     }
 
-    // search = (items, term) => {
-    //     if (items.length === 0){
-    //         return items
-    //     }
-    //     return items.filter(item => item.label.toLowerCase().indexOf(term) > -1)
-    // }
-
   render() {
-
     if(!this.state.clients){
         return <p>Загрузка данных ...</p>
     }
@@ -54,7 +80,10 @@ export default class App extends Component {
     return (
       <div className="app ">
           <div className="container">
-              <SearchClient searchHandler={ this.searchHandler } />
+              <SearchClient
+                  searchHandler={ this.searchHandler }
+                  clearGender={ this.clearGender }
+              />
               <ClientList clients={ this.state.clients } />
           </div>
       </div>
